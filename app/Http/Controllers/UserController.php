@@ -29,14 +29,13 @@ class UserController extends Controller
             ]);
 
             $user->assignRole($request->role);
-            
+
             $token = $user->createToken('mytoken')->plainTextToken;
 
             return response([
                 'user' => $user,
                 'token' => $token
             ], 201);
-
         } catch (ValidationException $e) {
             return response()->json(['error' => $e->validator->errors()->first()], 422);
         } catch (\Exception $e) {
@@ -73,11 +72,26 @@ class UserController extends Controller
         $request->user()->tokens()->delete();
         return response()->json(['message' => 'Logged out successfully']);
     }
-    
+
     public function profile(Request $request)
     {
+        // $user = Auth::user();
+        $user =  $request->user();
+
+        if ($user->hasRole('admin')) {
+            $role = $user->roles->first()->name;
+            $permissions = $user->getAllPermissions()->pluck('name')->toArray();
+
+            return response()->json([
+                'user' => [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'role' => $role,
+                    'permissions' => $permissions,
+                ]
+            ]);
+        }
         return response()->json($request->user());
     }
-
-
 }
