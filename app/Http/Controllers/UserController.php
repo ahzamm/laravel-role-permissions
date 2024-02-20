@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
@@ -42,4 +43,41 @@ class UserController extends Controller
             return response()->json(['error' => 'Something went wrong. Please try again later.'], 500);
         }
     }
+
+    public function login(Request $request)
+    {
+
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required',
+        ]);
+
+        $user = User::where('email', $request->email)->first();
+
+        if (!$user) {
+            return response()->json(['message' => 'User not found'], 404);
+        }
+        if (!Hash::check($request->password, $user->password)) {
+            return response()->json(['message' => 'Invalid Credentials']);
+        }
+        Auth::login($user);
+        $token = $user->createToken('mytoken')->plainTextToken;
+
+        return response([
+            'user' => $user, 'token' => $token
+        ]);
+    }
+
+    public function logout(Request $request)
+    {
+        $request->user()->tokens()->delete();
+        return response()->json(['message' => 'Logged out successfully']);
+    }
+    
+    public function profile(Request $request)
+    {
+        return response()->json($request->user());
+    }
+
+
 }
