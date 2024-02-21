@@ -124,4 +124,28 @@ class UserController extends Controller
 
         return response()->json(['message' => 'Password changed successfully', 'token' => $token], 200);
     }
+
+    public function adminChangePassword(Request $request)
+    {
+
+        $request->validate([
+            'email' => 'required',
+            'password' => 'required|confirmed',
+        ]);
+
+        if (!$request->user()->hasRole('admin')) {
+            return response()->json(['message' => 'Unauthenticated'], 200);
+        }
+
+        $user = User::where('email', $request->email)->first();
+        if (!$user) {
+            return response()->json(['message' => 'User not found'], 404);
+        }
+
+        $user->password = Hash::make($request->password);
+        $user->save();
+        $user->tokens()->delete();
+
+        return response()->json(['message' => 'Password changed successfully'], 200);
+    }
 }
