@@ -148,4 +148,28 @@ class UserController extends Controller
 
         return response()->json(['message' => 'Password changed successfully'], 200);
     }
+
+
+    public function adminDeleteUser(Request $request)
+    {
+
+        $request->validate([
+            'email' => 'required',
+        ]);
+
+        if (!$request->user()->hasRole('admin')) {
+            return response()->json(['message' => 'Unauthenticated'], 200);
+        }
+
+        $user = User::where('email', $request->email)->first();
+        if (!$user) {
+            return response()->json(['message' => 'User not found'], 404);
+        }
+
+        $user->tokens()->delete();
+        $user->delete();
+        return response()->json(['message' => 'User deleted successfully'], 404);
+
+    }
+
 }
