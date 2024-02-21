@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Auth;
+use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
@@ -28,7 +29,9 @@ class UserController extends Controller
                 'password' => Hash::make($request->password)
             ]);
 
-            $user->assignRole($request->role);
+            $role = Role::findByName($request->role);
+            $user->assignRole($role->name);
+            $user->givePermissionTo($role->permissions->pluck('name')->toArray());
 
             $token = $user->createToken('mytoken')->plainTextToken;
 
