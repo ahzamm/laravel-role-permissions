@@ -75,7 +75,6 @@ class UserController extends Controller
 
     public function profile(Request $request)
     {
-        // $user = Auth::user();
         $user =  $request->user();
 
         if ($user->hasRole('admin')) {
@@ -93,5 +92,28 @@ class UserController extends Controller
             ]);
         }
         return response()->json($request->user());
+    }
+
+    public function changePassword(Request $request)
+    {
+
+        $request->validate([
+            'old_password' => 'required',
+            'new_password' => 'required|confirmed',
+        ]);
+
+        $user = $request->user();
+
+        if (!Hash::check($request->old_password, $user->password)) {
+            return response()->json(['message' => 'wrong old password']);
+        }
+        $request->user()->tokens()->delete();
+
+        $user->password = Hash::make($request->new_password);
+        $user->save();
+
+        $token = $user->createToken('mytoken')->plainTextToken;
+
+        return response()->json(['message' => 'Password changed successfully', 'token' => $token], 200);
     }
 }
