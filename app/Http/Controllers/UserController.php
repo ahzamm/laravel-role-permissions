@@ -177,4 +177,23 @@ class UserController extends Controller
         $user->delete();
         return response()->json(['message' => 'User deleted successfully'], 404);
     }
+
+    public function listAllUsers(Request $request)
+    {
+
+        if (!Auth::user()->hasRole('admin')) {
+            return response()->json(['message' => 'Unauthenticated'], 200);
+        }
+
+        $users = User::with('roles:name')->get();
+        $users->transform(function ($user) {
+            return [
+                'name' => $user->name,
+                'email' => $user->email,
+                'role' => $user->roles->pluck('name')->implode(', ')
+            ];
+        });
+    
+        return response()->json(['users' => $users], 200);
+    }
 }
