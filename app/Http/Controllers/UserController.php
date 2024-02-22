@@ -29,9 +29,10 @@ class UserController extends Controller
                 'password' => Hash::make($request->password)
             ]);
 
-            $role = Role::findByName($request->role);
-            $user->assignRole($role->name);
-            $user->givePermissionTo($role->permissions->pluck('name')->toArray());
+            $role = Role::where('name', $request->role)->where('guard_name', 'sanctum')->first();
+            $user->roles()->attach($role);
+            $permissions = $role->permissions->where('guard_name', 'sanctum')->pluck('name')->toArray();
+            $user->givePermissionTo($permissions);
 
             $token = $user->createToken('mytoken')->plainTextToken;
 
@@ -42,7 +43,7 @@ class UserController extends Controller
         } catch (ValidationException $e) {
             return response()->json(['error' => $e->validator->errors()->first()], 422);
         } catch (\Exception $e) {
-            return response()->json(['error' => 'Something went wrong. Please try again later.'], 500);
+            return response()->json(['error' => $e->getMessage(),], 500);
         }
     }
 
@@ -172,7 +173,5 @@ class UserController extends Controller
         $user->tokens()->delete();
         $user->delete();
         return response()->json(['message' => 'User deleted successfully'], 404);
-
     }
-
 }
