@@ -14,9 +14,9 @@ class UserController extends Controller
 {
     public function register(Request $request)
     {
-        // if (!Auth::user()->hasRole('admin')) {
-        //     return response()->json(['message' => 'Unauthenticated'], 200);
-        // }
+        if (!Auth::user()->hasRole('admin')) {
+            return response()->json(['message' => 'Unauthenticated'], 200);
+        }
 
         try {
             $request->validate([
