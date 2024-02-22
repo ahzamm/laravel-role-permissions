@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\RoleController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 
@@ -13,4 +14,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/user/change-password', [UserController::class, 'changePassword']);
     Route::post('/user/admin-change-password', [UserController::class, 'adminChangePassword']);
     Route::post('/user/admin-delete-user', [UserController::class, 'adminDeleteUser']);
+    
+    
+    Route::post('/create-role', [RoleController::class, 'createRole']);
 });

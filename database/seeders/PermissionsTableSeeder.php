@@ -2,24 +2,20 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Permission;
 
 class PermissionsTableSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
-        Permission::create(['name' => 'role-list']);
-        Permission::create(['name' => 'role-create']);
-        Permission::create(['name' => 'role-edit']);
-        Permission::create(['name' => 'role-delete']);
-        Permission::create(['name' => 'product-list']);
-        Permission::create(['name' => 'product-create']);
-        Permission::create(['name' => 'product-edit']);
-        Permission::create(['name' => 'product-delete']);
+        Permission::create(['id' => 1, 'name' => 'role-list', 'guard_name' => 'sanctum']);
+        Permission::create(['id' => 2, 'name' => 'role-create', 'guard_name' => 'sanctum']);
+        Permission::create(['id' => 3, 'name' => 'role-edit', 'guard_name' => 'sanctum']);
+        Permission::create(['id' => 4, 'name' => 'role-delete', 'guard_name' => 'sanctum']);
+        Permission::create(['id' => 5, 'name' => 'product-list', 'guard_name' => 'sanctum']);
+        Permission::create(['id' => 6, 'name' => 'product-create', 'guard_name' => 'sanctum']);
+        Permission::create(['id' => 7, 'name' => 'product-edit', 'guard_name' => 'sanctum']);
+        Permission::create(['id' => 8, 'name' => 'product-delete', 'guard_name' => 'sanctum']);
     }
 }
