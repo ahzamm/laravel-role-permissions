@@ -15,6 +15,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/user/admin-change-password', [UserController::class, 'adminChangePassword']);
     Route::post('/user/admin-delete-user', [UserController::class, 'adminDeleteUser']);
     Route::get('/user/list-users', [UserController::class, 'listAllUsers']);
+    Route::post('/user/edit-user/{id}', [UserController::class, 'editUser']);
     
 
     Route::post('/create-role', [RoleController::class, 'createRole']);

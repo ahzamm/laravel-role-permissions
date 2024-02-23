@@ -193,7 +193,35 @@ class UserController extends Controller
                 'role' => $user->roles->pluck('name')->implode(', ')
             ];
         });
-    
+
         return response()->json(['users' => $users], 200);
+    }
+
+    public function editUser(Request $request, $id)
+    {
+        if (!Auth::user()->hasRole('admin')) {
+            return response()->json(['message' => 'Unauthenticated'], 200);
+        }
+        
+        $user = User::findOrFail($id);
+
+        $rules = [
+            'name' => 'sometimes|string',
+            'email' => 'sometimes|email|unique:users,email,' . $user->id,
+            'password' => 'sometimes|required_with:password_confirmation|string|confirmed',
+            'password_confirmation' => 'sometimes|required_with:password|string',
+            'role' => 'sometimes|string'
+        ];
+
+        $validatedData = $request->validate($rules);
+
+        if (isset($validatedData['password'])) {
+            $validatedData['password'] = Hash::make($validatedData['password']);
+            unset($validatedData['password_confirmation']);
+        }
+
+        $user->update($validatedData);
+
+        return response()->json(['message' => 'User updated successfully'], 200);
     }
 }
