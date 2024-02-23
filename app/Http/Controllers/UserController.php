@@ -202,7 +202,7 @@ class UserController extends Controller
         if (!Auth::user()->hasRole('admin')) {
             return response()->json(['message' => 'Unauthenticated'], 200);
         }
-        
+
         $user = User::findOrFail($id);
 
         $rules = [
@@ -218,6 +218,13 @@ class UserController extends Controller
         if (isset($validatedData['password'])) {
             $validatedData['password'] = Hash::make($validatedData['password']);
             unset($validatedData['password_confirmation']);
+        }
+
+        if (isset($validatedData['role'])) {
+            $role = Role::where('name', $request->role)->where('guard_name', 'sanctum')->first();
+            $user->syncRoles([$role->id]);
+            $user->syncPermissions($role->permissions->pluck('id')->toArray());
+            unset($validatedData['role']);
         }
 
         $user->update($validatedData);
