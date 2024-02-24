@@ -58,4 +58,12 @@ class RoleController extends Controller
             return response()->json(['error' => 'Failed to create role: ' . $e->getMessage()], 500);
         }
     }
+
+    public function listRoles()
+    {
+        if (!Auth::user()->hasRole('admin')) {
+            return response()->json(['message' => 'Unauthenticated'], 401);
+        }
+        return Role::get()->pluck('name');
+    }
 }
