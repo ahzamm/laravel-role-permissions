@@ -1,6 +1,5 @@
 @extends('base-template')
 
-
 @section('content')
     <style>
         body {
@@ -17,7 +16,8 @@
         th,
         td {
             padding: 10px;
-            border-bottom: 1px solid #ddd;
+            border: 1px solid #ddd;
+            text-align: center;
         }
 
         th {
@@ -26,7 +26,7 @@
 
         button {
             padding: 5px 10px;
-            color: white;
+            color: rgb(0, 0, 0);
             border: none;
             cursor: pointer;
         }
@@ -44,7 +44,7 @@
         }
     </style>
     <h1>Users Management</h1>
-    <button class="green">Create New User</button>
+    <button style="color: white" class="green">Create New User</button>
     <table>
         <thead>
             <tr>
