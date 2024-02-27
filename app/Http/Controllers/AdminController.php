@@ -10,7 +10,6 @@ class AdminController extends Controller
 {
     public function login(Request $request)
     {
-
         $request->validate([
             'email' => 'required|email',
             'password' => 'required',
@@ -19,13 +18,17 @@ class AdminController extends Controller
         $user = User::where('email', $request->email)->first();
 
         if (!$user) {
-            return response()->json(['message' => 'User not found'], 404);
+            return redirect()
+                ->back()
+                ->withErrors(['email' => 'User not found']);
         }
         if (!Hash::check($request->password, $user->password)) {
-            return response()->json(['message' => 'Invalid Credentials']);
+            return redirect()
+                ->back()
+                ->withErrors(['password' => 'Invalid credentials']);
         }
-        $token = $user->createToken('mytoken')->plainTextToken;
 
+        $token = $user->createToken('mytoken')->plainTextToken;
         return redirect()->route('dashboard')->withCookie(cookie('token', $token));
     }
 }
