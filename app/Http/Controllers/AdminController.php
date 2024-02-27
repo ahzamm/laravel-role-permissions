@@ -3,7 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
+
 use App\Models\User;
 
 class AdminController extends Controller
@@ -15,20 +16,32 @@ class AdminController extends Controller
             'password' => 'required',
         ]);
 
-        $user = User::where('email', $request->email)->first();
+        $credentials = $request->only('email', 'password');
 
-        if (!$user) {
-            return redirect()
-                ->back()
-                ->withErrors(['email' => 'User not found']);
+        if (Auth::guard('web')->attempt($credentials)) {
+            return redirect()->route('dashboard');
         }
-        if (!Hash::check($request->password, $user->password)) {
+        return back()->withErrors([
+            'email' => 'The provided credentials do not match our records.',
+        ]);
+    }
+
+    public function manageUsers()
+    {
+        if (!Auth::user()->hasRole('admin')) {
             return redirect()
-                ->back()
-                ->withErrors(['password' => 'Invalid credentials']);
+                ->route('login')
+                ->withErrors(['message' => 'Unauthenticated']);
         }
 
-        $token = $user->createToken('mytoken')->plainTextToken;
-        return redirect()->route('dashboard')->withCookie(cookie('token', $token));
+        $users = User::with('roles:name')->get();
+        $users->transform(function ($user) {
+            return [
+                'name' => $user->name,
+                'email' => $user->email,
+                'role' => $user->roles->pluck('name')->implode(', '),
+            ];
+        });
+        return view('manage-users', ['users' => $users]);
     }
 }

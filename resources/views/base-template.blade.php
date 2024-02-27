@@ -14,7 +14,7 @@
             <h1>Admin Dashboard</h1>
         </div>
         <div>
-            <a href="/admin/manage-users">Manage Users</a>
+            <a href="/admin/manage-users" id="manageUsersLink">Manage Users</a>
             <a href="/admin/manage-roles">Manage Roles</a>
         </div>
     </header>
