@@ -11,3 +11,7 @@ Route::post('/admin/login', [AdminController::class, 'login']);
 Route::get('/admin/dashboard', function () {
     return view('dashboard');
 })->name('dashboard');
+
+Route::get('/admin/manage-users', function () {
+    return view('manage-users');
+})->name('manage-users');

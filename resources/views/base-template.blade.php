@@ -5,6 +5,7 @@
     <title>Admin Dashboard</title>
     <link rel="stylesheet" type="text/css" href="{{ asset('css/dashboard.css') }}">
 
+    @yield('style')
 </head>
 
 <body>
@@ -13,7 +14,7 @@
             <h1>Admin Dashboard</h1>
         </div>
         <div>
-            <a href="/admin/manage-users">Manage User</a>
+            <a href="/admin/manage-users">Manage Users</a>
             <a href="/admin/manage-roles">Manage Roles</a>
         </div>
     </header>
