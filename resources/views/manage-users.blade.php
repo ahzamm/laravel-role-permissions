@@ -1,6 +1,7 @@
 @extends('base-template')
 
-@section('styles')
+
+@section('content')
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -10,6 +11,7 @@
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
+            border: 1px solid #ddd;
         }
 
         th,
@@ -41,35 +43,32 @@
             background-color: red;
         }
     </style>
-@endsection
-
-@section('content')
     <h1>Users Management</h1>
     <button class="green">Create New User</button>
     <table>
-        <tr>
-            <th>No</th>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Roles</th>
-            <th>Action</th>
-        </tr>
-        <tr>
-            <td>1</td>
-            <td>Sandeep</td>
-            <td>sandeep@gmail.com</td>
-            <td>Admin</td>
-            <td>
-                <button class="blue">Show</button>
-                <button class="blue">Edit</button>
-                <button class="red">Delete</button>
-            </td>
-        </tr>
+        <thead>
+            <tr>
+                <th>NO</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach ($users as $user)
+                <tr>
+                    <td>{{ $loop->iteration }}</td>
+                    <td>{{ $user['name'] }}</td>
+                    <td>{{ $user['email'] }}</td>
+                    <td>{{ $user['role'] }}</td>
+                    <td>
+                        <button>Show</button>
+                        <button>Edit</button>
+                        <button>Delete</button>
+                    </td>
+                </tr>
+            @endforeach
+        </tbody>
     </table>
-
-    @foreach ($users as $user)
-        <p>Name: {{ $user['name'] }}</p>
-        <p>Email: {{ $user['email'] }}</p>
-        <p>Role: {{ $user['role'] }}</p>
-    @endforeach
 @endsection
