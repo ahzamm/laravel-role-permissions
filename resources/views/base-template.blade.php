@@ -8,7 +8,7 @@
 </head>
 
 <body>
-    <header>
+    <header class="mainbox">
         <div>
             <h1>Admin Dashboard</h1>
         </div>
@@ -18,7 +18,8 @@
         </div>
     </header>
     <main>
-        @yield('content')
+        <div class="mainbox">@yield('content')</div>
+
 
     </main>
     <footer>

@@ -25,3 +25,8 @@ color: white;
 text-decoration: none;
 margin-right: 30px;
 }
+
+.mainbox{
+    padding-left: 100px;
+    padding-right: 100px;
+}
