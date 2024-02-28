@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
@@ -23,36 +22,40 @@ class UserController extends Controller
                 'name' => 'required',
                 'email' => 'required|email|unique:users',
                 'password' => 'required|confirmed',
-                'role' => 'required'
+                'role' => 'required',
             ]);
 
             $user = User::create([
                 'name' => $request->name,
                 'email' => $request->email,
-                'password' => Hash::make($request->password)
+                'password' => Hash::make($request->password),
             ]);
 
-            $role = Role::where('name', $request->role)->where('guard_name', 'sanctum')->first();
+            $role = Role::where('name', $request->role)
+                ->where('guard_name', 'sanctum')
+                ->first();
             $user->roles()->attach($role);
             $permissions = $role->permissions->where('guard_name', 'sanctum')->pluck('name')->toArray();
             $user->givePermissionTo($permissions);
 
             $token = $user->createToken('mytoken')->plainTextToken;
 
-            return response([
-                'user' => $user,
-                'token' => $token
-            ], 201);
+            return response(
+                [
+                    'user' => $user,
+                    'token' => $token,
+                ],
+                201,
+            );
         } catch (ValidationException $e) {
             return response()->json(['error' => $e->validator->errors()->first()], 422);
         } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage(),], 500);
+            return response()->json(['error' => $e->getMessage()], 500);
         }
     }
 
     public function login(Request $request)
     {
-
         $request->validate([
             'email' => 'required|email',
             'password' => 'required',
@@ -61,16 +64,14 @@ class UserController extends Controller
         $user = User::where('email', $request->email)->first();
 
         if (!$user) {
-            return response()->json(['message' => 'User not found'], 404);
+            return response()->json(['success' => false, 'message' => 'User not found'], 404);
         }
         if (!Hash::check($request->password, $user->password)) {
-            return response()->json(['message' => 'Invalid Credentials']);
+            return response()->json(['success' => false, 'message' => 'Invalid Credentials']);
         }
         $token = $user->createToken('mytoken')->plainTextToken;
 
-        return response([
-            'user' => $user, 'token' => $token
-        ]);
+        return response(['success' => true, 'user' => $user, 'token' => $token]);
     }
 
     public function logout(Request $request)
@@ -89,7 +90,7 @@ class UserController extends Controller
 
     public function profile(Request $request)
     {
-        $user =  $request->user();
+        $user = $request->user();
 
         if ($user->hasRole('admin')) {
             $role = $user->roles->first()->name;
@@ -102,7 +103,7 @@ class UserController extends Controller
                     'email' => $user->email,
                     'role' => $role,
                     'permissions' => $permissions,
-                ]
+                ],
             ]);
         }
         return response()->json($request->user());
@@ -110,7 +111,6 @@ class UserController extends Controller
 
     public function changePassword(Request $request)
     {
-
         $request->validate([
             'old_password' => 'required',
             'new_password' => 'required|confirmed',
@@ -133,7 +133,6 @@ class UserController extends Controller
 
     public function adminChangePassword(Request $request)
     {
-
         $request->validate([
             'email' => 'required',
             'password' => 'required|confirmed',
@@ -155,10 +154,8 @@ class UserController extends Controller
         return response()->json(['message' => 'Password changed successfully'], 200);
     }
 
-
     public function adminDeleteUser(Request $request)
     {
-
         $request->validate([
             'email' => 'required',
         ]);
@@ -179,7 +176,6 @@ class UserController extends Controller
 
     public function listAllUsers(Request $request)
     {
-
         if (!Auth::user()->hasRole('admin')) {
             return response()->json(['message' => 'Unauthenticated'], 200);
         }
@@ -189,7 +185,7 @@ class UserController extends Controller
             return [
                 'name' => $user->name,
                 'email' => $user->email,
-                'role' => $user->roles->pluck('name')->implode(', ')
+                'role' => $user->roles->pluck('name')->implode(', '),
             ];
         });
 
@@ -209,7 +205,7 @@ class UserController extends Controller
             'email' => 'sometimes|email|unique:users,email,' . $user->id,
             'password' => 'sometimes|required_with:password_confirmation|string|confirmed',
             'password_confirmation' => 'sometimes|required_with:password|string',
-            'role' => 'sometimes|string'
+            'role' => 'sometimes|string',
         ];
 
         $validatedData = $request->validate($rules);
@@ -220,7 +216,9 @@ class UserController extends Controller
         }
 
         if (isset($validatedData['role'])) {
-            $role = Role::where('name', $request->role)->where('guard_name', 'sanctum')->first();
+            $role = Role::where('name', $request->role)
+                ->where('guard_name', 'sanctum')
+                ->first();
             $user->syncRoles([$role->id]);
             $user->syncPermissions($role->permissions->pluck('id')->toArray());
             unset($validatedData['role']);
