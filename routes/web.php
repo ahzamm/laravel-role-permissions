@@ -14,4 +14,5 @@ Route::get('/admin/dashboard', function () {
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/admin/manage-users', [AdminController::class, 'manageUsers'])->name('manage-users');
+    Route::get('/admin/create-user',  [AdminController::class, 'createUser'])->name('createUser');
 });

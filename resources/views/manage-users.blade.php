@@ -44,7 +44,7 @@
         }
     </style>
     <h1>Users Management</h1>
-    <button style="color: white" class="green">Create New User</button>
+    <a href="/admin/create-user"> <button style="color: white" class="green">Create New User</button></a>
     <table>
         <thead>
             <tr>

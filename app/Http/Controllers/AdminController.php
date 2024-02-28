@@ -44,4 +44,13 @@ class AdminController extends Controller
         });
         return view('manage-users', ['users' => $users]);
     }
+
+    public function createUser()
+    {
+        if (!Auth::user()->hasRole('admin')) {
+            return redirect()
+                ->route('login')
+                ->withErrors(['message' => 'Unauthenticated']);
+        }
+    }
 }
