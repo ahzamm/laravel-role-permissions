@@ -1,8 +1,6 @@
 @extends('base-template')
 
 @section('content')
-    <h1>create new user</h1>
-
     <!DOCTYPE html>
     <html lang="en">
 
@@ -67,7 +65,7 @@
     <body>
         <div class="container">
             <h2>Registration Form</h2>
-            <form action="submit.php" method="POST">
+            <form action="/admin/manage-users" method="POST">
                 <label for="name">Name:</label>
                 <input type="text" id="name" name="name" required>
 
@@ -83,7 +81,7 @@
                 <label for="role">Role:</label>
                 <select id="role" name="role">
                     @foreach ($roles as $role)
-                    <option value="{{$role}}">{{$role}}</option>
+                        <option value="{{ $role }}">{{ $role }}</option>
                     @endforeach
                 </select>
 
