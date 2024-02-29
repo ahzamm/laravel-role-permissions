@@ -62,13 +62,26 @@ class AdminAPIController extends Controller
         $responseArray = json_decode($response, true);
         curl_close($ch);
 
-        $success = $responseArray['success'];
-        if ($success) {
-            return view('manage-users', ['users' => $responseArray["users"]]);
-        } else {
+        if ($response === false) {
             return back()->withErrors([
-                'error' => $responseArray['message'],
+                'error' => 'An Error occur',
             ]);
+        } else {
+            try {
+
+                $success = $responseArray['success'];
+                if ($success) {
+                    return view('manage-users', ['users' => $responseArray["users"]]);
+                } else {
+                    return back()->withErrors([
+                        'error' => $responseArray['message'],
+                    ]);
+                }
+            } catch (\Exception $e) {
+                return redirect()->route('login')->withErrors([
+                    'error' => 'An Error occur',
+                ]);
+            }
         }
     }
 }
