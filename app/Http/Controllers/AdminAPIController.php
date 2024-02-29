@@ -106,6 +106,18 @@ class AdminAPIController extends Controller
     {
         $token = $request->cookie('token');
         try {
+
+            $oldKey = 'confirm_password';
+            $newKey = 'password_confirmation';
+
+            if (array_key_exists($oldKey, $request->all())) {
+                $newValue = $request[$oldKey];
+                unset($request[$oldKey]);
+                $request[$newKey] = $newValue;
+            }
+
+            // dd($request->all());
+
             $request->validate([
                 'name' => 'required',
                 'email' => 'required|email|unique:users',
@@ -123,14 +135,13 @@ class AdminAPIController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => $request->password,
+            'password_confirmation'=>$request->password_confirmation,
             'role' => $request->role
         ]);
 
-
         $responseArray = json_decode($response, true);
-        // dd($responseArray);
-
         $success = $responseArray['success'];
+
         if ($success) {
             return redirect()->route('manage-users');
         } else {

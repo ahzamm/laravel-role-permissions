@@ -65,6 +65,15 @@
     <body>
         <div class="container">
             <h2>Registration Form</h2>
+            @if ($errors->any())
+                <div id="errorAlert" class="alert alert-danger" style="color: hsl(211, 100%, 50%);;">
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                            {{ $error }}
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
             <form action="/admin/create-user" method="POST">
                 @csrf
                 <label for="name">Name:</label>
@@ -76,8 +85,8 @@
                 <label for="password">Password:</label>
                 <input type="password" id="password" name="password" required>
 
-                <label for="confirm_password">Confirm Password:</label>
-                <input type="password" id="password_confirmation" name="confirm_password" required>
+                <label for="password_confirmation">Confirm Password:</label>
+                <input type="password" id="password_confirmation" name="password_confirmation" required>
 
                 <label for="role">Role:</label>
                 <select id="role" name="role">
@@ -90,6 +99,13 @@
             </form>
         </div>
     </body>
+    @if ($errors->any())
+        <script>
+            setTimeout(function() {
+                document.getElementById('errorAlert').style.display = 'none';
+            }, 2000);
+        </script>
+    @endif
 
     </html>
 @endsection
