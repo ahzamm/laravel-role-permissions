@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cookie;
+use Illuminate\Support\Facades\Http;
 
 class AdminAPIController extends Controller
 {
@@ -14,16 +15,9 @@ class AdminAPIController extends Controller
             'password' => 'required',
         ]);
 
-        $url = 'http://localhost:8001/api/user/login';
-        $data = ['email' => $request->email, 'password' => $request->password];
-        $ch = curl_init($url);
-
-        curl_setopt($ch, CURLOPT_POST, 1);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
-        $response = curl_exec($ch);
-        curl_close($ch);
+        $response = Http::post('http://localhost:8001/api/user/login', [
+            'email' => $request->email, 'password' => $request->password
+        ]);
 
         if ($response === false) {
             return back()->withErrors([
@@ -48,19 +42,12 @@ class AdminAPIController extends Controller
     {
         $token = $request->cookie('token');
 
-        $url = 'http://localhost:8001/api/user/list-users';
-        $ch = curl_init($url);
+        $response = Http::withHeaders([
+            'Authorization' => 'Bearer ' . $token,
+            'Content-Type' => 'application/json',
+        ])->get('http://localhost:8001/api/user/list-users');
 
-
-        curl_setopt($ch, CURLOPT_HTTPHEADER, [
-            'Authorization: Bearer ' . $token,
-        ]);
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
-        $response = curl_exec($ch);
         $responseArray = json_decode($response, true);
-        curl_close($ch);
 
         if ($response === false) {
             return back()->withErrors([
