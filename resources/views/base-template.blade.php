@@ -4,21 +4,6 @@
 <head>
     <title>Admin Dashboard</title>
     <link rel="stylesheet" type="text/css" href="{{ asset('css/dashboard.css') }}">
-    <script>
-        function attachToken() {
-            var token = document.cookie.replace(/(?:(?:^|.*;\s*)token\s*=\s*([^;]*).*$)|^.*$/, "$1");
-            if (token) {
-                console.log("=====TOKEN===", token);
-                fetch('/admin/manage-users', {
-                    method: 'GET',
-                    headers: {
-                        'Authorization': 'Bearer ' + token 
-                    }
-                })
-            }
-        }
-    </script>
-
 </head>
 
 <body>

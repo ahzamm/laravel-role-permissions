@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cookie;
-use Illuminate\Support\Facades\Auth;
 
 class AdminAPIController extends Controller
 {
@@ -47,10 +46,7 @@ class AdminAPIController extends Controller
 
     public function manageUsers(Request $request)
     {
-        // $authHeader = $request->header('Authorization');
-        // dump($authHeader);
         $token = $request->cookie('token');
-        // dd("===".$token);
 
         $url = 'http://localhost:8001/api/user/list-users';
         $ch = curl_init($url);
@@ -64,7 +60,6 @@ class AdminAPIController extends Controller
 
         $response = curl_exec($ch);
         $responseArray = json_decode($response, true);
-        // dump($responseArray);
 
         curl_close($ch);
         return view('manage-users', ['users' => $responseArray["users"]]);
