@@ -62,8 +62,8 @@ class RoleController extends Controller
     public function listRoles()
     {
         if (!Auth::user()->hasRole('admin')) {
-            return response()->json(['message' => 'Unauthenticated'], 401);
+            return response()->json(['success' => false, 'message' => 'Unauthenticated'], 401);
         }
-        return Role::get()->pluck('name');
+        return response()->json(["success" => true, "roles" => Role::get()->pluck('name')]);
     }
 }

@@ -71,4 +71,34 @@ class AdminAPIController extends Controller
             }
         }
     }
+
+    public function createUser(Request $request)
+    {
+        $token = $request->cookie('token');
+
+        $response = Http::withHeaders([
+            'Authorization' => 'Bearer ' . $token,
+            'Content-Type' => 'application/json',
+        ])->get('http://localhost:8001/api/list-roles');
+
+
+        $responseArray = json_decode($response, true);
+
+
+        try {
+
+            $success = $responseArray['success'];
+            if ($success) {
+                return view('create-user', ['role' => $responseArray["roles"]]);
+            } else {
+                return back()->withErrors([
+                    'error' => $responseArray['message'],
+                ]);
+            }
+        } catch (\Exception $e) {
+            return redirect()->route('login')->withErrors([
+                'error' => 'An Error occur',
+            ]);
+        }
+    }
 }

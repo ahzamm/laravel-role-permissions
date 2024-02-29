@@ -19,5 +19,5 @@ Route::middleware('auth:sanctum')->group(function () {
     
 
     Route::post('/create-role', [RoleController::class, 'createRole']);
-    Route::post('/list-roles', [RoleController::class, 'listRoles']);
+    Route::get('/list-roles', [RoleController::class, 'listRoles']);
 });
