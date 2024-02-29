@@ -10,31 +10,28 @@ class AdminAPIController extends Controller
 {
     public function login(Request $request)
     {
-        $request->validate([
-            'email' => 'required|email',
-            'password' => 'required',
-        ]);
+
+        Cookie::queue(Cookie::forget('token'));
+        Cookie::queue(Cookie::forget('laravel_session'));
+        Cookie::queue(Cookie::forget('XSRF-TOKEN'));
+        Cookie::queue(Cookie::forget('XSRF-st-last-access-token-update'));
+
 
         $response = Http::post('http://localhost:8001/api/user/login', [
             'email' => $request->email, 'password' => $request->password
         ]);
 
-        if ($response === false) {
-            return back()->withErrors([
-                'error' => 'An Error occur',
-            ]);
+
+        $responseArray = json_decode($response, true);
+        $success = $responseArray['success'];
+        if ($success) {
+            $token = $responseArray['token'];
+            Cookie::queue('token', $token, 60);
+            return redirect()->route('dashboard');
         } else {
-            $responseArray = json_decode($response, true);
-            $success = $responseArray['success'];
-            if ($success) {
-                $token = $responseArray['token'];
-                Cookie::queue('token', $token, 60);
-                return redirect()->route('dashboard');
-            } else {
-                return back()->withErrors([
-                    'error' => $responseArray['message'],
-                ]);
-            }
+            return back()->withErrors([
+                'error' => $responseArray['message'],
+            ]);
         }
     }
 
