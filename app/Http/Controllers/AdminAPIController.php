@@ -101,4 +101,42 @@ class AdminAPIController extends Controller
             ]);
         }
     }
+
+    public function registerUser(Request $request)
+    {
+        $token = $request->cookie('token');
+        try {
+            $request->validate([
+                'name' => 'required',
+                'email' => 'required|email|unique:users',
+                'password' => 'required|confirmed',
+                'role' => 'required',
+            ]);
+        } catch (\Exception $e) {
+            redirect()->back();
+        }
+
+        $response = Http::withHeaders([
+            'Authorization' => 'Bearer ' . $token,
+            'Content-Type' => 'application/json',
+        ])->post('http://localhost:8001/api/user/register', [
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => $request->password,
+            'role' => $request->role
+        ]);
+
+
+        $responseArray = json_decode($response, true);
+        // dd($responseArray);
+
+        $success = $responseArray['success'];
+        if ($success) {
+            return redirect()->route('manage-users');
+        } else {
+            return back()->withErrors([
+                'error' => $responseArray['message'],
+            ]);
+        }
+    }
 }

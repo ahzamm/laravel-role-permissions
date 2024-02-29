@@ -14,7 +14,7 @@ class UserController extends Controller
     public function register(Request $request)
     {
         if (!Auth::user()->hasRole('admin')) {
-            return response()->json(['message' => 'Unauthenticated'], 200);
+            return response()->json(['success' => false, 'message' => 'Unauthenticated'], 200);
         }
 
         try {
@@ -42,15 +42,16 @@ class UserController extends Controller
 
             return response(
                 [
+                    'success' => true,
                     'user' => $user,
                     'token' => $token,
                 ],
                 201,
             );
         } catch (ValidationException $e) {
-            return response()->json(['error' => $e->validator->errors()->first()], 422);
+            return response()->json(['success' => false, 'message' => $e->validator->errors()->first()], 422);
         } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 500);
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
         }
     }
 
@@ -177,7 +178,7 @@ class UserController extends Controller
     public function listAllUsers(Request $request)
     {
         if (!Auth::user()->hasRole('admin')) {
-            return response()->json(['success'=> false, 'message' => 'Unauthenticated'], 200);
+            return response()->json(['success' => false, 'message' => 'Unauthenticated'], 200);
         }
 
         $users = User::with('roles:name')->get();
@@ -189,7 +190,7 @@ class UserController extends Controller
             ];
         });
 
-        return response()->json(['success'=> true, 'users' => $users], 200);
+        return response()->json(['success' => true, 'users' => $users], 200);
     }
 
     public function editUser(Request $request, $id)

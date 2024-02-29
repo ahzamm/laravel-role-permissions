@@ -65,7 +65,8 @@
     <body>
         <div class="container">
             <h2>Registration Form</h2>
-            <form action="/admin/manage-users" method="POST">
+            <form action="/admin/create-user" method="POST">
+                @csrf
                 <label for="name">Name:</label>
                 <input type="text" id="name" name="name" required>
 
@@ -76,7 +77,7 @@
                 <input type="password" id="password" name="password" required>
 
                 <label for="confirm_password">Confirm Password:</label>
-                <input type="password" id="confirm_password" name="confirm_password" required>
+                <input type="password" id="password_confirmation" name="confirm_password" required>
 
                 <label for="role">Role:</label>
                 <select id="role" name="role">
