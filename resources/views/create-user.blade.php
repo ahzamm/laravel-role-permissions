@@ -82,9 +82,9 @@
 
                 <label for="role">Role:</label>
                 <select id="role" name="role">
-                    <option value="admin">Admin</option>
-                    <option value="user">User</option>
-                    <option value="guest">Guest</option>
+                    @foreach ($roles as $role)
+                    <option value="{{$role}}">{{$role}}</option>
+                    @endforeach
                 </select>
 
                 <input type="submit" value="Submit">

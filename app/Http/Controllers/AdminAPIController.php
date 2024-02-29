@@ -89,7 +89,7 @@ class AdminAPIController extends Controller
 
             $success = $responseArray['success'];
             if ($success) {
-                return view('create-user', ['role' => $responseArray["roles"]]);
+                return view('create-user', ['roles' => $responseArray["roles"]]);
             } else {
                 return back()->withErrors([
                     'error' => $responseArray['message'],
