@@ -60,8 +60,15 @@ class AdminAPIController extends Controller
 
         $response = curl_exec($ch);
         $responseArray = json_decode($response, true);
-
         curl_close($ch);
-        return view('manage-users', ['users' => $responseArray["users"]]);
+
+        $success = $responseArray['success'];
+        if ($success) {
+            return view('manage-users', ['users' => $responseArray["users"]]);
+        } else {
+            return back()->withErrors([
+                'error' => $responseArray['message'],
+            ]);
+        }
     }
 }
