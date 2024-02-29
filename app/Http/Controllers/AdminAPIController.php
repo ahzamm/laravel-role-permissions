@@ -115,15 +115,6 @@ class AdminAPIController extends Controller
                 unset($request[$oldKey]);
                 $request[$newKey] = $newValue;
             }
-
-            // dd($request->all());
-
-            $request->validate([
-                'name' => 'required',
-                'email' => 'required|email|unique:users',
-                'password' => 'required|confirmed',
-                'role' => 'required',
-            ]);
         } catch (\Exception $e) {
             redirect()->back();
         }
@@ -135,7 +126,7 @@ class AdminAPIController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => $request->password,
-            'password_confirmation'=>$request->password_confirmation,
+            'password_confirmation' => $request->password_confirmation,
             'role' => $request->role
         ]);
 
