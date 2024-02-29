@@ -138,4 +138,22 @@ class AdminAPIController extends Controller
             ]);
         }
     }
+
+    public function logout(Request $request){
+
+        $token = $request->cookie('token');
+
+        Http::withHeaders([
+            'Authorization' => 'Bearer ' . $token,
+            'Content-Type' => 'application/json',
+        ])->post('http://localhost:8001/api/user/logout');
+
+        Cookie::queue(Cookie::forget('token'));
+        Cookie::queue(Cookie::forget('laravel_session'));
+        Cookie::queue(Cookie::forget('XSRF-TOKEN'));
+        Cookie::queue(Cookie::forget('XSRF-st-last-access-token-update'));
+
+        return redirect()->route('login');
+
+    }
 }

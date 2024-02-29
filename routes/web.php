@@ -14,3 +14,4 @@ Route::get('/admin/dashboard', function () {
 Route::get('/admin/manage-users', [AdminAPIController::class, 'manageUsers'])->name('manage-users');
 Route::get('/admin/create-user',  [AdminAPIController::class, 'createUser'])->name('create-user');
 Route::post('/admin/create-user',  [AdminAPIController::class, 'registerUser'])->name('register-user');
+Route::get('/admin/logout',  [AdminAPIController::class, 'logout'])->name('logout');

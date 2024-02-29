@@ -14,6 +14,7 @@
         <div>
             <a href="/admin/manage-users" id="manageUsersLink" onclick="attachToken()">Manage Users</a>
             <a href="/admin/manage-roles">Manage Roles</a>
+            <a href="/admin/logout">Logout</a>
         </div>
     </header>
     <main>
