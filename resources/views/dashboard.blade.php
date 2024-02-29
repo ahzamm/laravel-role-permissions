@@ -5,7 +5,7 @@
         <div id="errorAlert" class="alert alert-danger" style="color: hsl(211, 100%, 50%);;">
             <ul>
                 @foreach ($errors->all() as $error)
-                    {{ $error }}
+                    <h1 style="text-align: center">{{ $error }}</h1>
                 @endforeach
             </ul>
         </div>
